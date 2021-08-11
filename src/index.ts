@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-// import fs from "fs";
+import { appendFileSync } from "fs";
 import inquirer from "inquirer";
 import { write } from "clipboardy";
 
@@ -65,7 +65,17 @@ const buildReference = (options: string[]): string => {
   }
 
   // write password to file
-  if (options.indexOf(PASSWORD_CUSTOMIZATION_OPTIONS.toFile)) {
+  if (options.indexOf(PASSWORD_CUSTOMIZATION_OPTIONS.toFile) > -1) {
+    const { path } = await inquirer.prompt([
+      {
+        type: "input",
+        default: "",
+        name: "path",
+        message: "Destination file path:",
+      },
+    ]);
+
+    appendFileSync(path, `\n${password}`);
   }
 
   console.log(password);
