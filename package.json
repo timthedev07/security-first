@@ -6,6 +6,7 @@
   "repository": "https://github.com/timthedev07/RandomPasswordGenerator.git",
   "license": "MIT",
   "dependencies": {
+    "clipboardy": "^2.3.0",
     "inquirer": "^8.1.2"
   },
   "devDependencies": {

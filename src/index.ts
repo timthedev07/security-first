@@ -2,6 +2,7 @@
 
 // import fs from "fs";
 import inquirer from "inquirer";
+import { write } from "clipboardy";
 
 const EXTRA_LENGTH_FACTOR = 5;
 
@@ -18,17 +19,17 @@ interface InquirerResponse {
 }
 
 const buildReference = (options: string[]): string => {
-  let reference = "";
+  let reference = "abcdefghijklmnopqrstuvwxyz";
 
-  if (options.indexOf(PASSWORD_CUSTOMIZATION_OPTIONS.num)) {
+  if (options.indexOf(PASSWORD_CUSTOMIZATION_OPTIONS.num) > -1) {
     reference += "0123456789";
   }
 
-  if (options.indexOf(PASSWORD_CUSTOMIZATION_OPTIONS.upper)) {
+  if (options.indexOf(PASSWORD_CUSTOMIZATION_OPTIONS.upper) > -1) {
     reference += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   }
 
-  if (options.indexOf(PASSWORD_CUSTOMIZATION_OPTIONS.special)) {
+  if (options.indexOf(PASSWORD_CUSTOMIZATION_OPTIONS.special) > -1) {
     reference += "!\"#$%'&()*+,-./:;<=>?@[]^_`{|}~";
   }
 
@@ -39,8 +40,8 @@ const buildReference = (options: string[]): string => {
   const { options, length }: InquirerResponse = await inquirer.prompt([
     {
       type: "checkbox",
-      message: "Customize password:",
-      name: "option",
+      message: "Password customization:",
+      name: "options",
       choices: Object.values(PASSWORD_CUSTOMIZATION_OPTIONS),
     },
     {
@@ -53,19 +54,21 @@ const buildReference = (options: string[]): string => {
 
   const reference = buildReference(options);
 
-  let res = "";
+  let password = "";
 
   for (
     let i = 0;
     i < length + Math.round(Math.random() * EXTRA_LENGTH_FACTOR);
     i++
   ) {
-    res += reference[Math.random() * (reference.length - 1)];
+    password += reference[Math.round(Math.random() * (reference.length - 1))];
   }
-
-  console.log(res);
 
   // write password to file
   if (options.indexOf(PASSWORD_CUSTOMIZATION_OPTIONS.toFile)) {
   }
+
+  console.log(password);
+  await write(password);
+  console.log("\x1b[36mPassword copied to clipboard!");
 })();
